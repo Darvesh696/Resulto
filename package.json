@@ -1,0 +1,24 @@
+{
+  "name": "0.0.3",
+  "version": "0.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "javascript",
+    "telgraph"
+  ],
+  "author": "Darvesh",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "node-fetch": "^2.1.2",
+    "puppeteer": "^1.5.0",
+    "telegraf": "^3.21.2"
+  }
+}
