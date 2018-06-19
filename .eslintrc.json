@@ -27,6 +27,7 @@
         ]
     },
     "globals": {
-        "CONFIG": false
+        "CONFIG": false,
+        "document":true
     }
 }
