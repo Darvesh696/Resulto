@@ -19,6 +19,7 @@
     "dotenv": "^6.0.0",
     "node-fetch": "^2.1.2",
     "puppeteer": "^1.5.0",
+    "ramda": "^0.25.0",
     "telegraf": "^3.21.2"
   }
 }
