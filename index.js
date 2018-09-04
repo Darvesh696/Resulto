@@ -16,7 +16,6 @@ Example:
 \t\t\t\t3 <your register number>`))
 
 
-
 bot.hears(/\d\s\d{9}/, async (ctx) => {
 	await sendResults(ctx)
 })
