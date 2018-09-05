@@ -17,10 +17,10 @@ const sendResults = async (ctx) => {
 		headless: true,
 		args: [
 			'--disable-gpu',
-			// '--no-sandbox',
-			// '--disable-setuid-sandbox',
-			// '--disable-dev-shm-usage',
-			// '--single-process',
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			'--disable-dev-shm-usage',
+			'--single-process'
 		],
 	})
 	const page = await browser.newPage()
