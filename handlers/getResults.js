@@ -26,14 +26,14 @@ const sendResults = async (ctx) => {
 	const page = await browser.newPage()
 	await page.goto(URL, {
 		waitUntil: 'networkidle2',
-		timeout: 9000
+		//timeout: 9000
 	})
 	//types register number in the input field
 	await page.type('.right input', registerNumber),
 	await page.click('#btnViewResult')
 	//Checks whether page is loaded. If not reply with possible error message
 	try{
-		await page.waitForSelector("#lblStudentName", { timeout: 500})
+		await page.waitForSelector("#lblStudentName", { timeout: 1500})
 	}catch(error){
 		await page.close()
 		await browser.close()
