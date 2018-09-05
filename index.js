@@ -29,8 +29,6 @@ bot.hears(/\d\s\d{9}/, async (ctx) => {
 	await sendResults(ctx)
 })
 
-bot.startPolling()
-
 app.get('/', (req, res) => {
 	res.send('Hello World!')
 })
