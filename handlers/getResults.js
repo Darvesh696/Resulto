@@ -12,9 +12,7 @@ const sendResults = async (ctx) => {
 		return ctx.reply("Not available. Please choose a number from the list provided, to get the list \nclick here 👉🏼 /start")
 	//{getURL} function retuns the URL of the passed semester's results webpage
 	const URL = await getURL(semesterNumber)
-	console.log(registerNumber)
-	process.setMaxListeners(Infinity);
-	console.time('testForEach');
+	process.setMaxListeners(Infinity)
 	const browser = await puppeteer.launch({
 		headless: true,
 		args: [
