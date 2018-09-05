@@ -2,7 +2,16 @@ require("./config/config")
 const sendResults = require('./handlers/getResults').sendResults
 const Telegraf = require('telegraf')
 
+
+const express = require('express')
+const app = express()
+
 const bot = new Telegraf(CONFIG.BOT_API_TOKEN)
+
+bot.telegram.setWebhook(`${CONFIG.URL}/bot${CONFIG.BOT_API_TOKEN}`)
+app.use(bot.webhookCallback(`/bot${CONFIG.BOT_API_TOKEN}`))
+
+
 
 bot.command('start', (ctx) => ctx.reply(`
 1 => 2015 NOV
@@ -22,3 +31,10 @@ bot.hears(/\d\s\d{9}/, async (ctx) => {
 
 bot.startPolling()
 
+app.get('/', (req, res) => {
+	res.send('Hello World!')
+})
+
+app.listen(CONFIG.PORT, () => {
+	console.log(`Server running on port ${CONFIG.PORT}`)
+})
