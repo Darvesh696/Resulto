@@ -1,3 +1,4 @@
+require('../config/config')
 const sendResults = require('./handlers/getResults').sendResults
 const Telegraf = require('telegraf')
 
