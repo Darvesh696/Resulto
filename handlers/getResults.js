@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer')
-const {formatObject} = require('../helpers/index')
-const {getURL} = require('../helpers/functions')
+const {formatObject} = require('../helpers/ResultsFormat')
+const {getURL} = require('../helpers/ResultFunctions')
 
-const sendResults = async (ctx) => {
+const sendResults = async (ctx, next) => {
 	let {message:{text:message}} = ctx
 	//gets the register number from the {message} with regex expression
 	let registerNumber = message.match(/\d{9}/)[0]
@@ -16,11 +16,11 @@ const sendResults = async (ctx) => {
 	const browser = await puppeteer.launch({
 		headless: true,
 		args: [
-			'--disable-gpu',
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			'--disable-dev-shm-usage',
-			'--single-process'
+			 '--disable-gpu',
+			 '--no-sandbox',
+			 '--disable-setuid-sandbox',
+			// '--disable-dev-shm-usage',
+			//'--single-process'
 		],
 	})
 	const page = await browser.newPage()
@@ -63,6 +63,9 @@ const sendResults = async (ctx) => {
 		]
 	})
 	ctx.replyWithHTML(formatObject(studentProfile))
+	.then(_=>{
+		next();
+	})
 	//closes puppeteer page and browser
 	await page.close()
 	await browser.close()

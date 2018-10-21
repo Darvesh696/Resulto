@@ -1,4 +1,4 @@
-const {findTotal,formatMessage} = require('./functions')
+const {findTotal,formatMessage} = require('./ResultFunctions')
 
 const formatObject = (data) => {
 	let formattedData = []
