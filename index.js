@@ -2,7 +2,7 @@ require('./config/config')
 const sendResults = require('./handlers/getResults').sendResults;
 const sendAttendance = require('./handlers/getAttendance').sendAttendance;
 const Telegraf = require('telegraf')
-
+const puppeteer = require('puppeteer');
 
 const express = require('express')
 const app = express()
@@ -36,11 +36,23 @@ bot.command('attendance', (ctx) => ctx.reply(`
 
 
 bot.on('text', async (ctx, next)=>{
+	const browser = await puppeteer.launch({
+		headless: true,
+		args: [
+			'--disable-gpu',
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			// '--disable-dev-shm-usage',
+			//'--single-process'
+		],
+	})
+	const page = await browser.newPage()
+	
 	if (/\d\s\d{9}/.test(ctx.message.text)) {
-		await sendResults(ctx,next);
+		await sendResults(ctx, page, next);
 	}
 	else if(/\d{6}/.test(ctx.message.text)){
-		await sendAttendance(ctx,next);
+		await sendAttendance(ctx, page, next);
 	}
 	ctx.reply(ctx.message.text);
 });

@@ -4,22 +4,22 @@ const puppeteer = require('puppeteer');
 const { formatMessage } = require('../helpers/AttendanceFormat');
 
 const URL = String(CONFIG.ATTENDANCEURL);
-const sendAttendance = async (ctx, next) => {
+const sendAttendance = async (ctx, page, next) => {
 	let { message: { text: message } } = ctx
 	//gets the register number from the {message} with regex expression
 	let registerNumber = message.match(/\d{6}/)[0]
 	process.setMaxListeners(Infinity)
-	const browser = await puppeteer.launch({
-		headless: true,
-		args: [
-			 '--disable-gpu',
-			 '--no-sandbox',
-			 '--disable-setuid-sandbox',
-			// '--disable-dev-shm-usage',
-			//'--single-process'
-		],
-	})
-	const page = await browser.newPage()
+	// const browser = await puppeteer.launch({
+	// 	headless: true,
+	// 	args: [
+	// 		 '--disable-gpu',
+	// 		 '--no-sandbox',
+	// 		 '--disable-setuid-sandbox',
+	// 		// '--disable-dev-shm-usage',
+	// 		//'--single-process'
+	// 	],
+	// })
+	// const page = await browser.newPage()
 	await page.goto(URL, {
 		waitUntil: 'networkidle2',
 		//timeout: 9000
@@ -54,7 +54,7 @@ const sendAttendance = async (ctx, next) => {
 	
 	//closes puppeteer page and browser
 	await page.close()
-	await browser.close()
+	//await browser.close()
 }
 
 module.exports.sendAttendance = sendAttendance

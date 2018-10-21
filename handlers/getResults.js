@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer')
 const {formatObject} = require('../helpers/ResultsFormat')
 const {getURL} = require('../helpers/ResultFunctions')
 
-const sendResults = async (ctx, next) => {
+const sendResults = async (ctx, page, next) => {
 	let {message:{text:message}} = ctx
 	//gets the register number from the {message} with regex expression
 	let registerNumber = message.match(/\d{9}/)[0]
@@ -13,17 +13,17 @@ const sendResults = async (ctx, next) => {
 	//{getURL} function retuns the URL of the passed semester's results webpage
 	const URL = await getURL(semesterNumber)
 	process.setMaxListeners(Infinity)
-	const browser = await puppeteer.launch({
-		headless: true,
-		args: [
-			 '--disable-gpu',
-			 '--no-sandbox',
-			 '--disable-setuid-sandbox',
-			// '--disable-dev-shm-usage',
-			//'--single-process'
-		],
-	})
-	const page = await browser.newPage()
+	// const browser = await puppeteer.launch({
+	// 	headless: true,
+	// 	args: [
+	// 		 '--disable-gpu',
+	// 		 '--no-sandbox',
+	// 		 '--disable-setuid-sandbox',
+	// 		// '--disable-dev-shm-usage',
+	// 		//'--single-process'
+	// 	],
+	// })
+	// const page = await browser.newPage()
 	await page.goto(URL, {
 		waitUntil: 'networkidle2',
 		//timeout: 9000
@@ -68,7 +68,7 @@ const sendResults = async (ctx, next) => {
 	})
 	//closes puppeteer page and browser
 	await page.close()
-	await browser.close()
+	//await browser.close()
 }
 
 module.exports.sendResults = sendResults
