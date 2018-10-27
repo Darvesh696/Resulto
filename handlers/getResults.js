@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer')
-const {formatObject} = require('../helpers/index')
-const {getURL} = require('../helpers/functions')
+const {formatObject} = require('../helpers/Result/ResultsFormat')
+const {getURL} = require('../helpers/Result/ResultFunctions')
 
-const sendResults = async (ctx) => {
+const sendResults = async (ctx, next) => {
 	let {message:{text:message}} = ctx
 	//gets the register number from the {message} with regex expression
 	let registerNumber = message.match(/\d{9}/)[0]
@@ -11,7 +11,7 @@ const sendResults = async (ctx) => {
 	if(Number(semesterNumber)<1 || Number(semesterNumber)>5)
 		return ctx.reply("Not available. Please choose a number from the list provided, to get the list \nclick here 👉🏼 /start")
 	//{getURL} function retuns the URL of the passed semester's results webpage
-	const URL = await getURL(semesterNumber)
+	const URL = getURL(semesterNumber)
 	process.setMaxListeners(Infinity)
 	const browser = await puppeteer.launch({
 		headless: true,
@@ -61,9 +61,8 @@ const sendResults = async (ctx) => {
 			regNum,
 			...subjectScore
 		]
-	})
-	ctx.replyWithHTML(formatObject(studentProfile))
-	//closes puppeteer page and browser
+	});
+	ctx.replyWithHTML(formatObject(studentProfile));	//closes puppeteer page and browser
 	await page.close()
 	await browser.close()
 }

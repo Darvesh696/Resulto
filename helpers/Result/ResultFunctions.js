@@ -1,4 +1,4 @@
-require('../config/config')
+require('../../config/config')
 const findTotal = (total, value) => {
 	return total += Number(value.total)
 }
