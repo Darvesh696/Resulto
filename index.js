@@ -1,11 +1,11 @@
-require('./config/config')
+require('./config/config');
 const sendResults = require('./handlers/getResults').sendResults;
 const sendAttendance = require('./handlers/getAttendance').sendAttendance;
-const Telegraf = require('telegraf')
-const express = require('express')
+const Telegraf = require('telegraf');
+const express = require('express');
 
-const app = express()
-const bot = new Telegraf(CONFIG.BOT_API_TOKEN)
+const app = express();
+const bot = new Telegraf(CONFIG.BOT_API_TOKEN);
 
 bot.telegram.setWebhook(`${CONFIG.URL}/bot${CONFIG.BOT_API_TOKEN}`)
 app.use(bot.webhookCallback(`/bot${CONFIG.BOT_API_TOKEN}`))
@@ -14,6 +14,7 @@ bot.command('start', (ctx) => ctx.reply(`
 	Choose Anyone for more details
 	  /result      - Mangalore university results
 	  /attendance  - AIMIT Attendance
+	  Created by @solooo7
 `));
 
 bot.command('result', (ctx) => ctx.reply(`
@@ -29,7 +30,7 @@ Example:
 
 bot.command('attendance', (ctx) => ctx.reply(`
 	Please Send Me Your Register Number
-`))
+`));
 
 bot.on('text', async (ctx, next)=>{
 	if (/\d\s\d{9}/.test(ctx.message.text)) {

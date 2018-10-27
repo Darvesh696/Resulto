@@ -34,17 +34,16 @@ const formatObject = ( object ) => {
 
 const leaveOrattend = (lectures) => {
 	return lectures.shortage === true
-		? `‼Attend next ${ lectures.classes } classes to get back on track.`
+		? `❌ Off Track ❌ \nAttend next ${ lectures.classes } classes to get back on track.`
 		: lectures.classes === 0
-			? `❕On track, don't be absent.`
-			: `🎉On track, you may leave next ${ lectures.classes } classes.`
+			? `❓ On Track ❓ \nDon't be absent.`
+			: `✅ On Track ✅ \nYou may leave next ${ lectures.classes } classes.`
 }
 
 const messageReducer = (message, v) => {
-	return message += `${ v.subject }\n\
-	\n                              <b>${ v.attended }/${ v.total } ==  ${ v.percentage }</b>\n \
-	\n<code>${ leaveOrattend(v.lectures) }</code> \
-	\n➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖`;
+	return message += `${ v.subject }\
+	\n<b>Attended: ${ v.attended }\nTotal: ${ v.total }  \nPercentage: ${ v.percentage }</b> \
+	\n<code>${ leaveOrattend(v.lectures) }</code> \n\n`;
 }
 
 module.exports = { formatObject, messageReducer };
