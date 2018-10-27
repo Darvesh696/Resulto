@@ -2,16 +2,13 @@ require('./config/config')
 const sendResults = require('./handlers/getResults').sendResults;
 const sendAttendance = require('./handlers/getAttendance').sendAttendance;
 const Telegraf = require('telegraf')
-const puppeteer = require('puppeteer');
-
 const express = require('express')
-const app = express()
 
+const app = express()
 const bot = new Telegraf(CONFIG.BOT_API_TOKEN)
 
-// bot.telegram.setWebhook(`${CONFIG.URL}/bot${CONFIG.BOT_API_TOKEN}`)
-// app.use(bot.webhookCallback(`/bot${CONFIG.BOT_API_TOKEN}`))
-
+bot.telegram.setWebhook(`${CONFIG.URL}/bot${CONFIG.BOT_API_TOKEN}`)
+app.use(bot.webhookCallback(`/bot${CONFIG.BOT_API_TOKEN}`))
 
 bot.command('start', (ctx) => ctx.reply(`
 	Choose Anyone for more details
@@ -34,35 +31,23 @@ bot.command('attendance', (ctx) => ctx.reply(`
 	Please Send Me Your Register Number
 `))
 
-
 bot.on('text', async (ctx, next)=>{
-	const browser = await puppeteer.launch({
-		headless: true,
-		args: [
-			'--disable-gpu',
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			// '--disable-dev-shm-usage',
-			//'--single-process'
-		],
-	})
-	const page = await browser.newPage()
-	
 	if (/\d\s\d{9}/.test(ctx.message.text)) {
-		await sendResults(ctx, page, next);
+		await sendResults(ctx, next);
 	}
 	else if(/\d{6}/.test(ctx.message.text)){
-		await sendAttendance(ctx, page, next);
+		console.time("Full time: ")
+		await sendAttendance(ctx, next);
+		console.timeEnd("Full time: ")
 	}
-	ctx.reply(ctx.message.text);
 });
 
-bot.startPolling();
+//bot.startPolling();
 
-// app.get('/', (req, res) => {
-// 	res.send('Hello World!')
-// })
+app.get('/', (req, res) => {
+	res.send('Hello World!')
+})
 
-// app.listen(CONFIG.PORT, () => {
-// 	console.log(`Server running on port ${CONFIG.PORT}`)
-// })
+app.listen(CONFIG.PORT, () => {
+	console.log(`Server running on port ${CONFIG.PORT}`)
+})
