@@ -14,7 +14,8 @@ const lectures = (m, n) => {
 
 const formatObject = ( object ) => {
 	const attendanceData = [];
-	for (let i = 0; i < object.length; i = i + 6) {
+	console.log(JSON.stringify(object,null,2));
+	for (let i = 0; i < object.length; i = i + 7) {
 		const shortage = lectures(Number(object[i + 4]), Number(object[i + 3]));
 		attendanceData.push({
 			code: object[i],
@@ -22,7 +23,7 @@ const formatObject = ( object ) => {
 			teachers: object[i + 2],
 			attended: Number(object[i + 3]),
 			total: Number(object[i + 4]),
-			percentage: object[i + 5],
+			percentage: object[i + 6],
 			lectures: {
 				shortage: shortage < 0 ? true : false,
 				classes: Math.abs(shortage)
