@@ -5,7 +5,7 @@ const FormData = require('form-data');
 const { JSDOM } = require('jsdom');
 const { formatMessage } = require('../helpers/Attendance/AttendanceFormat');
 
-const sendAttendance = async (ctx, pages, next) => {
+const sendAttendance = async (ctx, next) => {
 	const registerNumber = ctx.message.text.match(/\d{6}/)[0]
 	const form = new FormData();
 	form.append('txtRegno', registerNumber);
