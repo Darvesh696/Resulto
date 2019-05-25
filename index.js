@@ -5,9 +5,9 @@ const Telegraf = require('telegraf');
 const bot = new Telegraf(CONFIG.BOT_API_TOKEN);
 
 bot.command('start', (ctx) => ctx.reply(`
-	Choose Anyone for more details
-	  Send Your Register Number
-	  **Created by @solooo7**
+	Send Your Register Number
+	
+	**Created by @solooo7**
 `));
 
 bot.command('attendance', (ctx) => ctx.reply(`
