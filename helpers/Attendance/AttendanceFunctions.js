@@ -14,7 +14,6 @@ const lectures = (m, n) => {
 
 const formatObject = ( object ) => {
 	const attendanceData = [];
-	console.log(JSON.stringify(object,null,2));
 	for (let i = 0; i < object.length; i = i + 7) {
 		const shortage = lectures(Number(object[i + 4]), Number(object[i + 3]));
 		attendanceData.push({

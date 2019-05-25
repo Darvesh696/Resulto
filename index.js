@@ -16,6 +16,7 @@ bot.command('attendance', (ctx) => ctx.reply(`
 
 bot.on('text', async (ctx, next)=>{
 	if(/\d{6}/.test(ctx.message.text)){
+		console.log(ctx.message.text);
 		console.time("Full time: ")
 		await sendAttendance(ctx, next);
 		console.timeEnd("Full time: ")
