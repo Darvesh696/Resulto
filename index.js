@@ -6,8 +6,6 @@ const bot = new Telegraf(CONFIG.BOT_API_TOKEN);
 
 bot.command('start', (ctx) => ctx.reply(`
 	Send Your Register Number
-	
-	**Created by @solooo7**
 `));
 
 bot.command('attendance', (ctx) => ctx.reply(`
@@ -24,5 +22,9 @@ bot.on('text', async (ctx, next)=>{
 		ctx.reply("Invalid Number")
 	}
 });
+
+bot.action(/(.*?)/, ctx => {
+	ctx.answerCbQuery(ctx.update.callback_query.data, true)
+})
 
 bot.startPolling();
