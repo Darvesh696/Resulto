@@ -1,3 +1,4 @@
+'use strict'
 const lectures = (m, n) => {
 	let ans = 0;
 	if (n < Math.ceil(0.75 * m))
@@ -48,7 +49,7 @@ const messageReducer = (v) => {
 }
 
 const formatDates = dates => {
-	const reg = /\d{2}\/\d{2}/g;
+	const reg = /\d{2}\/\d{2}\/\d{4}/g;
 	return dates === 'Not Absent for Any Class !! '
 		? dates
 		: !!(Symbol.iterator in Object(dates.match(reg))) ? [...dates.match(reg)].join("\n") : '';

@@ -3,7 +3,6 @@ require('../config/config');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 const cheerio = require("cheerio");
-const qs = require("qs");
 const { Markup } = require('telegraf');
 
 const { formatObject, messageReducer, formatDates  } = require('../helpers/Attendance/AttendanceFunctions');
@@ -13,7 +12,7 @@ const getArgs = (fn) => fn
 	.match(/([^\s,]+)/g)
 	.map(cur => cur.replace(/\"/g, ""))
 
-const sendAttendance = async (ctx, next) => {
+const sendAttendance = async (ctx) => {
 	const registerNumber = ctx.message.text.match(/\d{6}/)[0]
 	const form = new FormData();
 	form.append('txtRegno', registerNumber);
@@ -36,57 +35,31 @@ const sendAttendance = async (ctx, next) => {
 		const name = $('#myForm > h3:nth-child(3) > b').text();
 		const regNum = $('#myForm > h3:nth-child(2) > b').text();
 		const rawData = [];
-		$('table tr td').each( (i, elem) => {
+		$('table tr td').each((i, elem) => {
 			rawData[i] = $(elem).text();
 		});
 		const studentAttendance = rawData.filter(a => Boolean(a));
 		const onclickValues = [];
-		$('table tr td').each((i, elem) =>{
-			if(elem.lastChild.attribs && elem.lastChild.attribs.onclick){
+		$('table tr td').each((i, elem) => {
+			if (elem.lastChild.attribs && elem.lastChild.attribs.onclick) {
 				onclickValues.push(elem.lastChild.attribs.onclick);
 			}
 		})
 
-		const responses = onclickValues.map(async v => {
-			const arg = getArgs(v).filter(m => Boolean(m));
-			const body = { tabname: arg[0], regno: arg[1]}
-			const res = await fetch(`https://www.sac-aimit.in/cas/absentdates.php`,{
-				method: 'POST',
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-				body: qs.stringify(body)
-			})
-			.then(res => res.text())
-			return res
-		})
-		const rawDates = await Promise.all(responses);
-		const datesHTML = rawDates.map(date => {
-			return cheerio.load(date, {
-				normalizeWhitespace: true
-			});
-		});
-		
-		const alldates = datesHTML.map(d => d('center >b').text())
-		const dates = alldates.map(d => d.replace(/\/2019/g, ""))
+		const responses = onclickValues.map(v => getArgs(v).filter(m => Boolean(m)));
 
-		
-		ctx.replyWithHTML(`<b>${name} \n${regNum}</b>\n➖➖➖➖➖➖➖➖➖➖➖➖➖\n `);
 		const students = formatObject(studentAttendance);
-		
+		await ctx.replyWithHTML(`<b>${name} \n${regNum}</b>\n➖➖➖➖➖➖➖➖➖➖➖➖➖\n `);
 		students.forEach(async (std, i) => {
 			try {
-				console.log(formatDates(dates[i]).length)
-				console.log(formatDates(dates[i]))
-				await ctx.replyWithHTML(messageReducer(std))
-				await ctx.replyWithHTML("Dates",Markup.inlineKeyboard([
-					Markup.callbackButton("View", formatDates(dates[i]))
+				await ctx.replyWithHTML(messageReducer(std), Markup.inlineKeyboard([
+					Markup.callbackButton("View Absent Dates", responses[i].toString())
 				]).extra())
-			}catch (error) {
-				console.log(formatDates(dates[i]).length)
+			} catch (error) {
 				console.log(error.toString())
 			}
 		});
-	
-		return 
+		return
 	}
 }
 module.exports.sendAttendance = sendAttendance;
