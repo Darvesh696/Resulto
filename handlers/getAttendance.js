@@ -2,10 +2,17 @@
 require('../config/config');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
-const { JSDOM } = require('jsdom');
-const { formatMessage } = require('../helpers/Attendance/AttendanceFormat');
+const cheerio = require("cheerio");
+const { Markup } = require('telegraf');
 
-const sendAttendance = async (ctx, next) => {
+const { formatObject, messageReducer, formatDates  } = require('../helpers/Attendance/AttendanceFunctions');
+
+const getArgs = (fn) => fn
+	.slice(fn.indexOf('(') + 1, fn.indexOf(')'))
+	.match(/([^\s,]+)/g)
+	.map(cur => cur.replace(/\"/g, ""))
+
+const sendAttendance = async (ctx) => {
 	const registerNumber = ctx.message.text.match(/\d{6}/)[0]
 	const form = new FormData();
 	form.append('txtRegno', registerNumber);
@@ -15,27 +22,44 @@ const sendAttendance = async (ctx, next) => {
 		body: form
 	});
 	const pageContent = await response.text();
-	const { window: { document } } = new JSDOM(pageContent);
-
-	if (document.querySelectorAll('table tr').length<1){
-		ctx
+	const $ = cheerio.load(pageContent, {
+		normalizeWhitespace: true
+	});
+	const rawData = [];
+	if ($('table tr td').length < 1) {
+		return ctx
 			.reply(`OOPS! SOMETHING WENT WRONG! \
 				\n\n1. INVALID REGISTER NUMBER \
 				\n2. WEBSITE IS BUSY(UNLIKELY)`);
-	}else{
-		const name = document
-			.querySelector('#myForm > h3:nth-child(3) > b')
-			.textContent;
-		const regNum = document
-			.querySelector('#myForm > h3:nth-child(2) > b')
-			.textContent;
-		const studentAttendance = Array
-			.from(document
-			.querySelectorAll('table tr td'))
-			.map(td => td.textContent)
-			.filter(Boolean);
-		ctx.replyWithHTML(formatMessage(studentAttendance, name, regNum));
+	} else {
+		const name = $('#myForm > h3:nth-child(3) > b').text();
+		const regNum = $('#myForm > h3:nth-child(2) > b').text();
+		const rawData = [];
+		$('table tr td').each((i, elem) => {
+			rawData[i] = $(elem).text();
+		});
+		const studentAttendance = rawData.filter(a => Boolean(a));
+		const onclickValues = [];
+		$('table tr td').each((i, elem) => {
+			if (elem.lastChild.attribs && elem.lastChild.attribs.onclick) {
+				onclickValues.push(elem.lastChild.attribs.onclick);
+			}
+		})
+
+		const responses = onclickValues.map(v => getArgs(v).filter(m => Boolean(m)));
+
+		const students = formatObject(studentAttendance);
+		await ctx.replyWithHTML(`<b>${name} \n${regNum}</b>\n➖➖➖➖➖➖➖➖➖➖➖➖➖\n `);
+		students.forEach(async (std, i) => {
+			try {
+				await ctx.replyWithHTML(messageReducer(std), Markup.inlineKeyboard([
+					Markup.callbackButton("View Absent Dates", responses[i].toString())
+				]).extra())
+			} catch (error) {
+				console.log(error.toString())
+			}
+		});
+		return
 	}
 }
-
 module.exports.sendAttendance = sendAttendance;
