@@ -32,10 +32,10 @@ const sendAttendance = async (ctx) => {
 				\n\n1. INVALID REGISTER NUMBER \
 				\n2. WEBSITE IS BUSY(UNLIKELY)`);
 	} else {
-		const name = $('#myForm > h3:nth-child(3) > b').text();
-		const regNum = $('#myForm > h3:nth-child(2) > b').text();
+		const name = $('#tblStatus > thead:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > h4:nth-child(1) > b:nth-child(1)').text();
+		const regNum = $('#tblStatus > thead:nth-child(1) > tr:nth-child(1) > td:nth-child(1) > h4:nth-child(1) > b:nth-child(1)').text();
 		const rawData = [];
-		$('table tr td').each((i, elem) => {
+		$('table tbody tr td').each((i, elem) => {
 			rawData[i] = $(elem).text();
 		});
 		const studentAttendance = rawData.filter(a => Boolean(a));
@@ -47,7 +47,6 @@ const sendAttendance = async (ctx) => {
 		})
 
 		const responses = onclickValues.map(v => getArgs(v).filter(m => Boolean(m)));
-
 		const students = formatObject(studentAttendance);
 		await ctx.replyWithHTML(`<b>${name} \n${regNum}</b>\n➖➖➖➖➖➖➖➖➖➖➖➖➖\n `);
 		students.forEach(async (std, i) => {
