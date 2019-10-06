@@ -54,7 +54,7 @@ const withDates = (date) => {
 	const DAYSINWEEK = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 	const d = date.split("/");
 	const newDate = d[1] + "-" + d[0] + "-" + d[2];
-	const day = new Date(Date.parse(newDate)).getUTCDay();
+	const day = new Date(Date.parse(newDate)).getDay();
 	return date + " ≈" + DAYSINWEEK[day];
 }
 
